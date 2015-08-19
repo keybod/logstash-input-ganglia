@@ -57,6 +57,8 @@ class LogStash::Inputs::Ganglia < LogStash::Inputs::Base
     end
 
     @udp = UDPSocket.new(Socket::AF_INET)
+    @logger.info "default rcvbuf size is %d" % @udp.getsockopt(Socket::SOL_SOCKET, Socket::SO_RCVBUF).unpack("i")
+    @udp.setsockopt(Socket::SOL_SOCKET, Socket::SO_RCVBUF, 26214400) # 25mb
     @udp.bind(@host, @port)
 
     @metadata = Hash.new if @metadata.nil?
